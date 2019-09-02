@@ -1,7 +1,7 @@
 # VPN Launchpad
 EC2 VPN server builder with multiple VPN support including SoftEther L2TP, Shadowsocks V2ray, Brook and Trojan.
 
-Works in Ubuntu(Xenial and above), Debian(Buster and above), Mac OSX(Yosemite and above) or dind (Docker in docker) as well.
+Works in Ubuntu(Xenial and above), Mac OSX(Yosemite and above) and Debian(Buster and above) variants. Running in Windows with dind (Docker in docker) container is possible but not yet verified.
 
 
 
@@ -10,7 +10,7 @@ Command vlp creates EC2 instance with VPN services installed out of box. Command
 
 
 
-## Quick start on Raspbian / Ubuntu
+## Quick start on Ubuntu
 
 #### 1. Dependencies installation
 ```
@@ -18,6 +18,8 @@ $ sudo apt-get update; sudo apt-get install docker.io git dnsutils curl whois
 $ sudo usermod -aG docker `whoami`; exit
 ```
 Note: It is necessary to log out current session and back to get docker group setting take effect.
+
+Note: Docker installation on Debian variants (including Raspbian) is currently broken. Please wait for the upstream fix.
 
 #### 2. Initialize AWS credential and VPN server region
 ```
@@ -83,7 +85,7 @@ dig +short @127.0.0.1 -p 65353 twitter.com
 104.244.42.1
 104.244.42.193
 Checking 104.244.42.1 IP owner ...
-docker exec -it proxy-ssllibev whois 104.244.42.1|grep OrgId
+docker exec -it proxy-sslibev whois 104.244.42.1|grep OrgId
 OrgId:          TWITT
 DNS server check passed.
 
@@ -167,7 +169,7 @@ lproxy <command> [options] <brook|shadowsocks>
   build            -- Build local proxy container.
     --from-src     -- Build local proxy container from source rather than docker image downloading.
       brook        -- Build local proxy container that connect to VPN server via Brook connector
-      shadowsocks  -- Build local proxy container that connect to VPN server via Shadowsocks connector
+      sslibev      -- Build local proxy container that connect to VPN server via Shadowsocks connector
       trojan       -- Build local proxy container that connect to VPN server via Trojan connector
       v2ray        -- Build local proxy container that connect to VPN server via V2ray connector
   status           -- Check local proxy container status.
@@ -183,7 +185,7 @@ Note: Component depency fetching from golang.org is necessary during the progres
 
 #### Password, encryption method and listening port for Shadowsocks VPN.
 ```
-$ cat server-ssslibev/server-ssslibev.env
+$ cat server-sslibev/server-sslibev.env
 SSPORT=" 8388"
 SSPASS="YOUR-PASS"
 SSMTHD="aes-256-gcm"
@@ -208,7 +210,7 @@ Credits to [Tomohisa Kusano](https://github.com/siomiz/SoftEtherVPN) and [SoftEt
 
 #### SOCKS/HTTP/DNS port for local proxy
 ```
-$ cat proxy-ssllibev/proxy-sslibev.env
+$ cat proxy-sslibev/proxy-sslibev.env
 SOCKSPORT="1080"
 HTTPPORT="8123"
 DNSPORT="65353"
@@ -233,8 +235,8 @@ $ sudo usermod -aG docker `whoami`; exit
 
 
 
-## Connect to the VPN server via Shadowsocks or V2Ray from mobile devices:
-Both "vlp build" and "vlp status --with-qrcode" print QR code as well as the shadowsocks URI. Scanning the QR code from Shadowsocks compatible mobile apps ([Shadowrocket](https://itunes.apple.com/au/app/shadowrocket/id932747118) for iOS or [Shadowsocks](https://github.com/shadowsocks/shadowsocks-android/releases) for Android etc.) will gives you a new connection entry named VLP-shadowsocks. Connect it and Enjoy please.
+## Connect to the VPN server via Shadowsocks/V2Ray/Trojan protocol from mobile devices:
+Both "vlp build" and "vlp status --with-qrcode" spit QR codes (for Shadowsocks, V2Ray and Trojan) to facilitate the connection from mobile devices via QR supported app like [Shadowrocket](https://itunes.apple.com/au/app/shadowrocket/id932747118) for iOS, or [Shadowsocks](https://github.com/shadowsocks/shadowsocks-android/releases), [v2rayNG](https://play.google.com/store/apps/details?id=com.v2ray.ang) and [Igniter](https://github.com/trojan-gfw/igniter/releases) (QR code scanning is unavailable so far) for Android. Simply scanning the QR code from these apps will create a new connection entry. Connect to it and Enjoy.
 ![QR code example](https://github.com/samuelhbne/vpn-launchpad/blob/master/images/qr.png)
 
 All credits to [qrcode-terminal](https://www.npmjs.com/package/qrcode-terminal)

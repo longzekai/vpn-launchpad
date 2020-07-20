@@ -10,6 +10,9 @@ SVRNAME="server-$SVCID"
 IMGNAME="samuelhbne/proxy-$SVCID"
 
 case $ARCH in
+	armv5tel)
+		TARGET=arm32v5.debian
+		;;
 	armv6l|armv7l)
 		TARGET=arm
 		;;
